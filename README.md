@@ -2,6 +2,14 @@
 
 `ResumeAnalyzerpdf.py` is a Python application designed to analyze resumes against specified job descriptions, providing similarity scores for each resume. This tool utilizes various libraries, including NumPy, Pandas, NLTK, Scikit-learn, SpaCy, and Gradio, to preprocess text, compute similarity scores, and create an intuitive user interface. Users can upload multiple PDF resumes or enter skills text directly, making it a versatile solution for job seekers and recruiters alike.
 
+## Installation
+
+To install the required libraries for this project, you can use the following command:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## 1. Library Imports
 
 ```python
