@@ -89,7 +89,3 @@ pip install -r requirements.txt
 ### User Interface
 
 The user interface is built using Gradio, which allows for easy interaction with the application. Users can upload files, enter text, and view results in a straightforward manner.
-
-## Contributing
-
-Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request.
