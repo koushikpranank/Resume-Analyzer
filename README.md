@@ -1,5 +1,6 @@
-# Resume-Analyzer
-This Python script is designed to analyze resumes in relation to a specified job description, providing a similarity score for each resume. The tool leverages various libraries, including NumPy, Pandas, NLTK, Scikit-learn, SpaCy, and Gradio, to preprocess text, compute similarity scores, and create a user-friendly interface. Below is a breakdown of the code components and their functionalities.
+# Resume Analyzer
+
+`ResumeAnalyzerpdf.py` is a Python application designed to analyze resumes against specified job descriptions, providing similarity scores for each resume. This tool utilizes various libraries, including NumPy, Pandas, NLTK, Scikit-learn, SpaCy, and Gradio, to preprocess text, compute similarity scores, and create an intuitive user interface. Users can upload multiple PDF resumes or enter skills text directly, making it a versatile solution for job seekers and recruiters alike.
 
 ## 1. Library Imports
 
@@ -13,6 +14,7 @@ import spacy
 import re
 from nltk.corpus import stopwords
 import gradio as gr
+import fitz  # PyMuPDF for reading PDF files
 ```
 
 - **NumPy and Pandas**: Used for numerical operations and data manipulation, respectively.
@@ -21,6 +23,7 @@ import gradio as gr
 - **SpaCy**: An NLP library used for advanced text processing.
 - **re**: A module for regular expression operations, useful for text cleaning.
 - **Gradio**: A library for creating user interfaces for machine learning models.
+- **PyMuPDF**: A library for reading text from PDF files.
 
 ## 2. Downloading Stopwords
 
@@ -77,8 +80,20 @@ def analyze_resumes(resumes, job_description):
 ## 5. Gradio Interface Function
 
 ```python
-def gradio_interface(resumes, job_description):
-    resumes = resumes.split('\n')
+def gradio_interface(pdf_files, skills_text, job_description):
+    resumes = []
+    
+    if pdf_files:
+        for pdf_file in pdf_files:
+            resume_text = extract_text_from_pdf(pdf_file)
+            resumes.append(resume_text)
+    
+    if skills_text:
+        resumes.extend(skills_text.splitlines())  # Split skills text into lines
+
+    if not resumes:
+        return "No resumes provided."
+
     results = analyze_resumes(resumes, job_description)
     output = 'Ranking of resumes based on job description match:\n'
     for idx, score in results:
@@ -88,7 +103,7 @@ def gradio_interface(resumes, job_description):
 
 **Function Purpose**: This function serves as the interface for the Gradio application, handling user input and displaying results.
 
-- **Input Handling**: The resumes are expected to be entered as a single string with each resume separated by a newline character (`\n`). The function splits this string into a list of individual resumes.
+- **Input Handling**: The function accepts both uploaded PDF files and skills text. If PDF files are provided, it extracts text from each file. If skills text is provided, it splits the text into individual lines, treating each line as a separate resume.
 - **Analysis Invocation**: It calls the `analyze_resumes` function, passing the list of resumes and the job description to obtain similarity scores.
 - **Output Formatting**: The results are formatted into a readable string that lists each resume along with its similarity score, rounded to two decimal places.
 - **Return Value**: The formatted output string is returned, which will be displayed in the Gradio interface.
@@ -99,23 +114,26 @@ def gradio_interface(resumes, job_description):
 with gr.Blocks() as demo:
     gr.Markdown("""# Resume Analyzer
     Analyze resumes based on their similarity to a given job description.
-    Enter resumes separated by new lines and a job description.
     """)
-    resumes_input = gr.Textbox(label="Enter Skills (separated by new lines)", lines=5, placeholder="Resume 1\nResume 2\n...")
+    
+    pdf_input = gr.File(label="Upload PDFs with Resumes", file_count="multiple")  # PDF upload
+    skills_input = gr.Textbox(label="Enter Skills Text (one per line)", lines=5)  # Skills input
+    
     job_desc_input = gr.Textbox(label="Enter Job Description", lines=2)
     output = gr.Textbox(label="Results")
     analyze_button = gr.Button("Analyze")
 
-    analyze_button.click(gradio_interface, [resumes_input, job_desc_input], output)
+    analyze_button.click(gradio_interface, [pdf_input, skills_input, job_desc_input], output)
 ```
 
 - **Gradio Blocks**: The `gr.Blocks()` context manager is used to create a structured layout for the Gradio interface.
 - **Markdown Description**: A Markdown component is added to provide a title and brief instructions for users on how to use the application.
 - **Input Components**:
-  - **Resumes Input**: A textbox for users to input multiple resumes, with a label and placeholder text to guide them.
+  - **PDF Input**: A file upload component for users to input multiple resumes in PDF format.
+  - **Skills Input**: A textbox for users to input skills text, with each skill on a new line.
   - **Job Description Input**: A separate textbox for the job description, allowing users to enter the relevant job details.
   - **Output Display**: A textbox designated for displaying the results of the analysis.
-  - **Analyze Button**: A button labeled "Analyze" is created, which, when clicked, triggers the `gradio_interface` function. The inputs from the resumes and job description textboxes are passed to this function, and the output is directed to the results textbox.
+  - **Analyze Button**: A button labeled "Analyze" is created, which, when clicked, triggers the `gradio_interface` function. The inputs from the PDF upload, skills text, and job description textboxes are passed to this function, and the output is directed to the results textbox.
 
 ## 7. Launching the Application
 
@@ -131,10 +149,12 @@ if __name__ == "__main__":
 
 This code provides a comprehensive solution for analyzing resumes against job descriptions using natural language processing techniques. By leveraging TF-IDF vectorization and cosine similarity, it quantifies how well each resume matches the specified job criteria. The Gradio interface enhances user experience by allowing easy input and output visualization, making the tool accessible even to those without programming expertise.
 
-# Interface
+## Interface
 
-![Screenshot 2025-03-23 054003](https://github.com/user-attachments/assets/5d0c5750-a339-4255-97c4-f95fa39c475d)
+![Screenshot 2025-03-23 063851](https://github.com/user-attachments/assets/ae27004d-7bb2-4511-af01-b56f3b1dc222)
 
-# Output
+## Sample Output 
 
-![Screenshot 2025-03-23 054059](https://github.com/user-attachments/assets/9884ab57-51cb-4f2c-822e-964b474ffb16)
+![Screenshot 2025-03-23 063934](https://github.com/user-attachments/assets/16365e55-abff-4b7d-be34-8872941b94c9)
+
+```
