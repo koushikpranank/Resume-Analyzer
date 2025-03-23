@@ -130,3 +130,11 @@ if __name__ == "__main__":
 ## Summary
 
 This code provides a comprehensive solution for analyzing resumes against job descriptions using natural language processing techniques. By leveraging TF-IDF vectorization and cosine similarity, it quantifies how well each resume matches the specified job criteria. The Gradio interface enhances user experience by allowing easy input and output visualization, making the tool accessible even to those without programming expertise.
+
+# Interface
+
+![Screenshot 2025-03-23 054003](https://github.com/user-attachments/assets/5d0c5750-a339-4255-97c4-f95fa39c475d)
+
+# Output
+
+![Screenshot 2025-03-23 054059](https://github.com/user-attachments/assets/9884ab57-51cb-4f2c-822e-964b474ffb16)
